@@ -27,6 +27,28 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
     }
 }
 
+void on_key_pressed(Key key)
+{
+    if (key == Key::LEFT && !left_down)
+    {
+        left_down = true;
+        stbsp_snprintf(left_s, sizeof(left_s), "%d", ++left_i);
+    }
+    if (key == Key::RIGHT && !right_down)
+    {
+        right_down = true;
+        stbsp_snprintf(right_s, sizeof(right_s), "%d", ++right_i);
+    }
+}
+
+void on_key_released(Key key)
+{
+    if (key == Key::LEFT)
+        left_down = false;
+    if (key == Key::RIGHT)
+        right_down = false;
+}
+
 #ifdef _WIN32
 #include <windows.h>
 
@@ -40,25 +62,15 @@ LRESULT CALLBACK HookCallback(int nCode, WPARAM wParam, LPARAM lParam)
 
     if (wParam == WM_KEYUP)
     {
-        if (cKey.vkCode == 83)
-            left_down = false;
-        if (cKey.vkCode == 68)
-            right_down = false;
+        if (cKey.vkCode == 83) on_key_released(Key::LEFT);
+        if (cKey.vkCode == 68) on_key_released(Key::RIGHT);
         return CallNextHookEx(hHook, nCode, wParam, lParam);
     }
 
     if (65 <= cKey.vkCode && cKey.vkCode <= 90)
     {
-        if (cKey.vkCode == 83 && !left_down)
-        {
-            left_down = true;
-            stbsp_snprintf(left_s, sizeof(left_s), "%d", ++left_i);
-        }
-        if (cKey.vkCode == 68 && !right_down)
-        {
-            right_down = true;
-            stbsp_snprintf(right_s, sizeof(right_s), "%d", ++right_i);
-        }
+        if (cKey.vkCode == 83) on_key_pressed(Key::LEFT);
+        if (cKey.vkCode == 68) on_key_pressed(Key::RIGHT);
     }
 
     return CallNextHookEx(hHook, nCode, wParam, lParam);
@@ -105,23 +117,13 @@ void set_keyboard_hook()
         } break;
         case KeyPress:
         {
-            if (event.xkey.keycode == 39 && !left_down)
-            {
-                left_down = true;
-                stbsp_snprintf(left_s, sizeof(left_s), "%d", ++left_i);
-            }
-            if (event.xkey.keycode == 40 && !right_down)
-            {
-                right_down = true;
-                stbsp_snprintf(right_s, sizeof(right_s), "%d", ++right_i);
-            }
+            if (event.xkey.keycode == 39) on_key_pressed(Key::LEFT);
+            if (event.xkey.keycode == 40) on_key_pressed(Key::RIGHT);
         } break;
         case KeyRelease:
         {
-            if (event.xkey.keycode == 39)
-                left_down = false;
-            if (event.xkey.keycode == 40)
-                right_down = false;
+            if (event.xkey.keycode == 39) on_key_released(Key::LEFT);
+            if (event.xkey.keycode == 40) on_key_released(Key::RIGHT);
         } break;
         }
     }
