@@ -8,4 +8,4 @@
 
 ## Windows build
 
-    g++ *.cpp imgui/*.cpp -Iinclude -Iimgui -lglfw3 -lopengl32
+    g++ *.cpp imgui/*.cpp -Iinclude -Iimgui -lglfw3 -lopengl32 -Wl,-subsystem,windows
