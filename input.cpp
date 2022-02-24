@@ -10,6 +10,8 @@ char left_s[16] = {0};
 char right_s[16] = {0};
 unsigned int left_i = 0;
 unsigned int right_i = 0;
+bool left_down = false;
+bool right_down = false;
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
@@ -34,17 +36,29 @@ HHOOK hHook;
 
 LRESULT CALLBACK HookCallback(int nCode, WPARAM wParam, LPARAM lParam)
 {
-    if (wParam == WM_KEYUP)
-        return CallNextHookEx(hHook, nCode, wParam, lParam);
-
     KBDLLHOOKSTRUCT cKey = *((KBDLLHOOKSTRUCT *)lParam);
+
+    if (wParam == WM_KEYUP)
+    {
+        if (cKey.vkCode == 83)
+            left_down = false;
+        if (cKey.vkCode == 68)
+            right_down = false;
+        return CallNextHookEx(hHook, nCode, wParam, lParam);
+    }
 
     if (65 <= cKey.vkCode && cKey.vkCode <= 90)
     {
-        if (cKey.vkCode == 83)
-            stbsp_snprintf(right_s, sizeof(right_s), "%d", ++right_i);
-        if (cKey.vkCode == 68)
+        if (cKey.vkCode == 83 && !left_down)
+        {
+            left_down = true;
             stbsp_snprintf(left_s, sizeof(left_s), "%d", ++left_i);
+        }
+        if (cKey.vkCode == 68 && !right_down)
+        {
+            right_down = true;
+            stbsp_snprintf(right_s, sizeof(right_s), "%d", ++right_i);
+        }
     }
 
     return CallNextHookEx(hHook, nCode, wParam, lParam);
@@ -64,6 +78,7 @@ void init_input()
 void set_keyboard_hook()
 {
     Display *display = XOpenDisplay(0);
+    XAutoRepeatOff(display);
     Window root = DefaultRootWindow(display);
     Window current_focus_window;
     int revert;
@@ -73,26 +88,41 @@ void set_keyboard_hook()
     XIM xim = XOpenIM(display, 0, 0, 0);
     XIC xic = XCreateIC(xim, XNInputStyle, XIMPreeditNothing | XIMStatusNothing, NULL);
     XEvent event;
+
     while (true)
     {
         XNextEvent(display, &event);
         switch (event.type)
         {
         case FocusOut:
+        {
             if (current_focus_window != root)
                 XSelectInput(display, current_focus_window, 0);
             XGetInputFocus(display, &current_focus_window, &revert);
             if (current_focus_window == PointerRoot)
                 current_focus_window = root;
             XSelectInput(display, current_focus_window, KeyPressMask | KeyReleaseMask | FocusChangeMask);
-            break;
+        } break;
         case KeyPress:
-            unsigned int &keycode = event.xkey.keycode;
-            if (keycode == 39)
-                stbsp_snprintf(right_s, sizeof(right_s), "%d", ++right_i);
-            if (keycode == 40)
+        {
+            if (event.xkey.keycode == 39 && !left_down)
+            {
+                left_down = true;
                 stbsp_snprintf(left_s, sizeof(left_s), "%d", ++left_i);
-            break;
+            }
+            if (event.xkey.keycode == 40 && !right_down)
+            {
+                right_down = true;
+                stbsp_snprintf(right_s, sizeof(right_s), "%d", ++right_i);
+            }
+        } break;
+        case KeyRelease:
+        {
+            if (event.xkey.keycode == 39)
+                left_down = false;
+            if (event.xkey.keycode == 40)
+                right_down = false;
+        } break;
         }
     }
 }

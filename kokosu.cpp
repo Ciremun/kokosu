@@ -133,14 +133,14 @@ int main(int, char**)
         ImGui::PushFont(font);
 
         ImGui::PushID(0);
-        if (ImGui::Button(right_s, ImVec2(63.0f, 115.0f)))
+        if (ImGui::Button(left_s, ImVec2(63.0f, 115.0f)))
             reset();
         ImGui::PopID();
 
         ImGui::SameLine();
 
         ImGui::PushID(1);
-        if (ImGui::Button(left_s, ImVec2(63.0f, 115.0f)))
+        if (ImGui::Button(right_s, ImVec2(63.0f, 115.0f)))
             reset();
         ImGui::PopID();
 
