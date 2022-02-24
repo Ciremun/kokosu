@@ -24,6 +24,8 @@ extern char left_s[16];
 extern char right_s[16];
 extern unsigned int left_i;
 extern unsigned int right_i;
+extern bool left_down;
+extern bool right_down;
 
 extern bool lmb_down;
 extern double last_mouse_clicked_x;
@@ -133,15 +135,18 @@ int main(int, char**)
         ImGui::PushFont(font);
 
         ImGui::PushID(0);
+        if (left_down) ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.34f, 0.04f, 0.68f, 1.0f));
         if (ImGui::Button(left_s, ImVec2(63.0f, 115.0f)))
             reset();
+        if (left_down) ImGui::PopStyleColor();
         ImGui::PopID();
 
         ImGui::SameLine();
 
         ImGui::PushID(1);
-        if (ImGui::Button(right_s, ImVec2(63.0f, 115.0f)))
-            reset();
+        if (right_down) ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.34f, 0.04f, 0.68f, 1.0f));
+        if (ImGui::Button(right_s, ImVec2(63.0f, 115.0f))) reset();
+        if (right_down) ImGui::PopStyleColor();
         ImGui::PopID();
 
         ImGui::PopFont();
