@@ -73,9 +73,20 @@ void on_key_released(Key key)
 #ifdef _WIN32
 #include <windows.h>
 
-#include <stdio.h>
+#include <thread>
 
 HHOOK hHook;
+
+static void register_hotkey()
+{
+    if (RegisterHotKey(NULL, 100, MOD_ALT | MOD_NOREPEAT, 0xBF))
+    {
+        MSG msg = {0};
+        while (GetMessage(&msg, NULL, 0, 0) != 0)
+            if (msg.message == WM_HOTKEY)
+                reset();
+    }
+}
 
 LRESULT CALLBACK HookCallback(int nCode, WPARAM wParam, LPARAM lParam)
 {
@@ -99,6 +110,7 @@ LRESULT CALLBACK HookCallback(int nCode, WPARAM wParam, LPARAM lParam)
 
 void init_input()
 {
+    static std::thread hotkey(register_hotkey);
     SetWindowsHookEx(WH_KEYBOARD_LL, HookCallback, NULL, 0);
 }
 
@@ -108,7 +120,22 @@ void init_input()
 
 #include <thread>
 
-void set_keyboard_hook()
+static void register_hotkey()
+{
+    Display *dpy = XOpenDisplay(0);
+    Window root = DefaultRootWindow(dpy);
+    XEvent ev;
+    XGrabKey(dpy, 61, Mod1Mask, root, 0, GrabModeAsync, GrabModeAsync);
+    XSelectInput(dpy, root, KeyPressMask);
+    while (true)
+    {
+        XNextEvent(dpy, &ev);
+        if (ev.type == KeyPress)
+            reset();
+    }
+}
+
+static void set_keyboard_hook()
 {
     Display *display = XOpenDisplay(0);
     XAutoRepeatOff(display);
@@ -152,7 +179,8 @@ void set_keyboard_hook()
 
 void init_input()
 {
-    static std::thread t(set_keyboard_hook);
+    static std::thread hotkey(register_hotkey);
+    static std::thread kb_hook(set_keyboard_hook);
 }
 
 #endif // _WIN32
