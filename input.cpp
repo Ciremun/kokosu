@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "stb_sprintf.h"
 
 #include "input.hpp"
@@ -6,12 +8,26 @@ bool lmb_down = false;
 double last_mouse_clicked_x = 0.0f;
 double last_mouse_clicked_y = 0.0f;
 
-char left_s[16] = {0};
-char right_s[16] = {0};
+char left_s[16] = {'0', '\0'};
+char right_s[16] = {'0', '\0'};
 unsigned int left_i = 0;
 unsigned int right_i = 0;
 bool left_down = false;
 bool right_down = false;
+
+double begin = 0.0;
+int keypresses_count = 0;
+char bpm_s[16] = {'0', '.', '0', '0', '\0'};
+
+void reset()
+{
+    left_i = 0;
+    right_i = 0;
+    keypresses_count = 0;
+    memcpy(left_s, "0", 2);
+    memcpy(right_s, "0", 2);
+    memcpy(bpm_s, "0.00", 5);
+}
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
@@ -39,6 +55,11 @@ void on_key_pressed(Key key)
         right_down = true;
         stbsp_snprintf(right_s, sizeof(right_s), "%d", ++right_i);
     }
+    if (!keypresses_count)
+        begin = glfwGetTime();
+    else
+        stbsp_snprintf(bpm_s, sizeof(bpm_s), "%.2f", 15 * keypresses_count / (glfwGetTime() - begin));
+    keypresses_count++;
 }
 
 void on_key_released(Key key)

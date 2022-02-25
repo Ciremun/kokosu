@@ -8,6 +8,7 @@ typedef enum
     RIGHT,
 } Key;
 
+void reset();
 void init_input();
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 void on_key_pressed(Key key);

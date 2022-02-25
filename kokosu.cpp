@@ -16,12 +16,12 @@
 #include "icon.hpp"
 #include "input.hpp"
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1900) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
-#pragma comment(lib, "legacy_stdio_definitions")
-#endif
+#define WINDOW_WIDTH 150
+#define WINDOW_HEIGHT 178
 
 extern char left_s[16];
 extern char right_s[16];
+extern char bpm_s[16];
 extern unsigned int left_i;
 extern unsigned int right_i;
 extern bool left_down;
@@ -60,7 +60,7 @@ int main(int, char**)
 #endif
 
     glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-    GLFWwindow* window = glfwCreateWindow(150, 150, "kokosu", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "kokosu", NULL, NULL);
     if (window == NULL)
         return 1;
     glfwMakeContextCurrent(window);
@@ -99,16 +99,7 @@ int main(int, char**)
     icon[0].width = width;
     glfwSetWindowIcon(window, 1, icon);
 
-    left_s[0] = '0';
-    right_s[0] = '0';
     init_input();
-
-    const auto reset = [=](){
-        memcpy(left_s, "0", 2);
-        memcpy(right_s, "0", 2);
-        left_i = 0;
-        right_i = 0;
-    };
 
     while (!glfwWindowShouldClose(window))
     {
@@ -127,7 +118,7 @@ int main(int, char**)
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        ImGui::SetNextWindowSize(ImVec2(150.0f, 150.0f), ImGuiCond_Once);
+        ImGui::SetNextWindowSize(ImVec2(WINDOW_WIDTH, WINDOW_HEIGHT), ImGuiCond_Once);
         ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f), ImGuiCond_Once);
 
         ImGui::Begin("kokosu", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
@@ -147,6 +138,11 @@ int main(int, char**)
         if (right_down) ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.34f, 0.04f, 0.68f, 1.0f));
         if (ImGui::Button(right_s, ImVec2(63.0f, 115.0f))) reset();
         if (right_down) ImGui::PopStyleColor();
+        ImGui::PopID();
+
+        ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(bpm_s).x) * 0.5f);
+        ImGui::PushID(2);
+        ImGui::Text("%s", bpm_s);
         ImGui::PopID();
 
         ImGui::PopFont();
