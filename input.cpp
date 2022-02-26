@@ -116,8 +116,8 @@ LRESULT CALLBACK HookCallback(int nCode, WPARAM wParam, LPARAM lParam)
 
     if (65 <= cKey.vkCode && cKey.vkCode <= 90)
     {
-        if (cKey.vkCode == 83) on_key_pressed(Key::LEFT);
-        if (cKey.vkCode == 68) on_key_pressed(Key::RIGHT);
+        if (cKey.vkCode == 83 && !left_down)  on_key_pressed(Key::LEFT);
+        if (cKey.vkCode == 68 && !right_down) on_key_pressed(Key::RIGHT);
     }
 
     return CallNextHookEx(hHook, nCode, wParam, lParam);
@@ -214,10 +214,10 @@ static void set_keyboard_hook()
             XSelectInput(display, current_focus_window, KeyPressMask | KeyReleaseMask | FocusChangeMask);
         } break;
         case KeyPress:
-	{
-	    if (event.xkey.keycode == 39 && !left_down)  on_key_pressed(Key::LEFT);
+        {
+            if (event.xkey.keycode == 39 && !left_down)  on_key_pressed(Key::LEFT);
             if (event.xkey.keycode == 40 && !right_down) on_key_pressed(Key::RIGHT);
-	} break;
+        } break;
         case KeyRelease:
         {
             if (event.xkey.keycode == 39) on_key_released(Key::LEFT);
