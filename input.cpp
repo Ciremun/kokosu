@@ -73,9 +73,24 @@ void on_key_released(Key key)
 #ifdef _WIN32
 #include <windows.h>
 
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3native.h>
+
 #include <thread>
 
 HHOOK hHook;
+
+void set_always_on_top(GLFWwindow* window)
+{
+    HWND hwnd = glfwGetWin32Window(window);
+    SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+}
+
+void unset_always_on_top(GLFWwindow* window)
+{
+    HWND hwnd = glfwGetWin32Window(window);
+    SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+}
 
 static void register_hotkey()
 {
@@ -116,9 +131,44 @@ void init_input()
 
 #else
 
+#include <X11/XKBlib.h>
 #include <X11/Xlib.h>
 
+#define GLFW_EXPOSE_NATIVE_X11
+#include <GLFW/glfw3native.h>
+
 #include <thread>
+
+#define _NET_WM_STATE_TOGGLE 2
+
+static void toggle_always_on_top(GLFWwindow *window)
+{
+    Display *display = XOpenDisplay(0);
+    Window w = glfwGetX11Window(window);
+    XClientMessageEvent xclient;
+    memset(&xclient, 0, sizeof (xclient));
+    xclient.type = ClientMessage;
+    xclient.window = w;
+    xclient.message_type = XInternAtom(display, "_NET_WM_STATE", 1);
+    xclient.format = 32;
+    xclient.data.l[0] = _NET_WM_STATE_TOGGLE;
+    xclient.data.l[1] = XInternAtom(display, "_NET_WM_STATE_ABOVE", 1);
+    xclient.data.l[2] = 0;
+    xclient.data.l[3] = 0;
+    xclient.data.l[4] = 0;
+    XSendEvent(display, DefaultRootWindow(display), False, SubstructureRedirectMask | SubstructureNotifyMask, (XEvent *)&xclient);
+    XFlush(display);
+}
+
+void set_always_on_top(GLFWwindow* window)
+{
+    toggle_always_on_top(window);
+}
+
+void unset_always_on_top(GLFWwindow* window)
+{
+    toggle_always_on_top(window);
+}
 
 static void register_hotkey()
 {
@@ -138,8 +188,8 @@ static void register_hotkey()
 static void set_keyboard_hook()
 {
     Display *display = XOpenDisplay(0);
-    XAutoRepeatOff(display);
     Window root = DefaultRootWindow(display);
+    XkbSetDetectableAutoRepeat(display, True, NULL);
     Window current_focus_window;
     int revert;
 
@@ -164,10 +214,10 @@ static void set_keyboard_hook()
             XSelectInput(display, current_focus_window, KeyPressMask | KeyReleaseMask | FocusChangeMask);
         } break;
         case KeyPress:
-        {
-            if (event.xkey.keycode == 39) on_key_pressed(Key::LEFT);
-            if (event.xkey.keycode == 40) on_key_pressed(Key::RIGHT);
-        } break;
+	{
+	    if (event.xkey.keycode == 39 && !left_down)  on_key_pressed(Key::LEFT);
+            if (event.xkey.keycode == 40 && !right_down) on_key_pressed(Key::RIGHT);
+	} break;
         case KeyRelease:
         {
             if (event.xkey.keycode == 39) on_key_released(Key::LEFT);

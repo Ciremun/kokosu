@@ -76,10 +76,16 @@ int main(int, char**)
 
     ImGuiStyle& style = ImGui::GetStyle();
     style.WindowTitleAlign = ImVec2(0.5f, 0.5f);
-    style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.28f, 0.05f, 0.66f, 1.0f);
-    style.Colors[ImGuiCol_Button]        = ImVec4(0.28f, 0.05f, 0.66f, 1.0f);
-    style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.34f, 0.04f, 0.68f, 1.0f);
-    style.Colors[ImGuiCol_ButtonActive]  = ImVec4(0.34f, 0.04f, 0.68f, 1.0f);
+
+    #define BLACK ImVec4(0.05f, 0.05f, 0.05f, 1.0f)
+    #define PURPLE ImVec4(0.28f, 0.05f, 0.66f, 1.0f)
+    #define MAGENTA ImVec4(0.34f, 0.04f, 0.68f, 1.0f)
+    style.Colors[ImGuiCol_TitleBgActive] = PURPLE;
+    style.Colors[ImGuiCol_Button]        = PURPLE;
+    style.Colors[ImGuiCol_ButtonHovered] = MAGENTA;
+    style.Colors[ImGuiCol_ButtonActive]  = MAGENTA;
+    style.Colors[ImGuiCol_PopupBg]       = BLACK;
+    style.Colors[ImGuiCol_HeaderHovered] = MAGENTA;
 
     ImFontConfig config;
     config.SizePixels = 13;
@@ -121,6 +127,25 @@ int main(int, char**)
         ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f), ImGuiCond_Once);
 
         ImGui::Begin("kokosu", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+
+        static const char* settings[] = { "Always On Top" };
+        static bool toggles[] = { false };
+
+        if (ImGui::BeginPopupContextItem())
+        {
+            for (int i = 0; i < IM_ARRAYSIZE(settings); i++)
+            {
+                if (ImGui::MenuItem(settings[i], "", &toggles[i]))
+                {
+                    if (toggles[i])
+                        set_always_on_top(window);
+                    else
+                        unset_always_on_top(window);
+                }
+            }
+
+            ImGui::EndPopup();
+        }
 
         ImGui::PushFont(font);
 
