@@ -16,10 +16,6 @@ osu! key overlay
 
 ## Controls
 
-<div style="display:flex">
-
-<div>
-
 |  Keys       | Description    |
 |-------------|----------------|
 | Z (Default) | Left Click     |
@@ -28,15 +24,7 @@ osu! key overlay
 | LMB         | Reset          |
 | RMB         | Settings       |
 
-</div>
-
-<div style="margin-left: 10px">
-
 |   Settings    |
 |---------------|
 | Remap Keys    |
 | Always On Top |
-
-</div>
-
-</div>
