@@ -10,7 +10,7 @@
 
     g++ -DIMGUI_USE_STB_SPRINTF *.cpp imgui/*.cpp -Iinclude -Iimgui -lglfw3 -lopengl32 -Wl,-subsystem,windows
 
-## Keys
+## Controls
 
 |  Keys       | Description    |
 |-------------|----------------|
