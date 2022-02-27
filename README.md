@@ -17,6 +17,7 @@ osu! key overlay
 ## Controls
 
 <div style="display:flex">
+
 <div>
 
 |  Keys       | Description    |
@@ -28,6 +29,7 @@ osu! key overlay
 | RMB         | Settings       |
 
 </div>
+
 <div style="margin-left: 10px">
 
 |   Settings    |
@@ -36,4 +38,5 @@ osu! key overlay
 | Always On Top |
 
 </div>
+
 </div>
