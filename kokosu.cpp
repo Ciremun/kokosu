@@ -30,6 +30,9 @@ extern bool lmb_down;
 extern double last_mouse_clicked_x;
 extern double last_mouse_clicked_y;
 
+extern char left_click_key[2];
+extern char right_click_key[2];
+
 static void glfw_error_callback(int error, const char* description)
 {
     fprintf(stderr, "Glfw Error %d: %s\n", error, description);
@@ -80,12 +83,15 @@ int main(int, char**)
     #define BLACK ImVec4(0.05f, 0.05f, 0.05f, 1.0f)
     #define PURPLE ImVec4(0.28f, 0.05f, 0.66f, 1.0f)
     #define MAGENTA ImVec4(0.34f, 0.04f, 0.68f, 1.0f)
-    style.Colors[ImGuiCol_TitleBgActive] = PURPLE;
-    style.Colors[ImGuiCol_Button]        = PURPLE;
-    style.Colors[ImGuiCol_ButtonHovered] = MAGENTA;
-    style.Colors[ImGuiCol_ButtonActive]  = MAGENTA;
-    style.Colors[ImGuiCol_PopupBg]       = BLACK;
-    style.Colors[ImGuiCol_HeaderHovered] = MAGENTA;
+    style.Colors[ImGuiCol_TitleBgActive]  = PURPLE;
+    style.Colors[ImGuiCol_Button]         = PURPLE;
+    style.Colors[ImGuiCol_ButtonHovered]  = MAGENTA;
+    style.Colors[ImGuiCol_ButtonActive]   = MAGENTA;
+    style.Colors[ImGuiCol_PopupBg]        = BLACK;
+    style.Colors[ImGuiCol_Header]         = PURPLE;
+    style.Colors[ImGuiCol_HeaderHovered]  = MAGENTA;
+    style.Colors[ImGuiCol_HeaderActive]   = MAGENTA;
+    style.Colors[ImGuiCol_FrameBg]        = PURPLE;
 
     ImFontConfig config;
     config.SizePixels = 13;
@@ -133,6 +139,14 @@ int main(int, char**)
 
         if (ImGui::BeginPopupContextItem())
         {
+            if (ImGui::CollapsingHeader("Remap Keys", ImGuiTreeNodeFlags_None))
+            {
+                ImGui::PushItemWidth(16.0f);
+                ImGui::InputText("Left Click",  left_click_key,  2, ImGuiInputTextFlags_CharsUppercase | ImGuiInputTextFlags_AutoSelectAll);
+                ImGui::InputText("Right Click", right_click_key, 2, ImGuiInputTextFlags_CharsUppercase | ImGuiInputTextFlags_AutoSelectAll);
+                ImGui::PopItemWidth();
+            }
+
             for (int i = 0; i < IM_ARRAYSIZE(settings); i++)
             {
                 if (ImGui::MenuItem(settings[i], "", &toggles[i]))

@@ -19,6 +19,9 @@ double begin = 0.0;
 int keypresses_count = 0;
 char bpm_s[16] = {'0', '.', '0', '0', '\0'};
 
+char left_click_key[2]  = {'Z', '\0'};
+char right_click_key[2] = {'X', '\0'};
+
 void reset()
 {
     left_i = 0;
@@ -107,17 +110,17 @@ LRESULT CALLBACK HookCallback(int nCode, WPARAM wParam, LPARAM lParam)
 {
     KBDLLHOOKSTRUCT cKey = *((KBDLLHOOKSTRUCT *)lParam);
 
-    if (wParam == WM_KEYUP)
+    if ('A' <= cKey.vkCode && cKey.vkCode <= 'Z')
     {
-        if (cKey.vkCode == 83) on_key_released(Key::LEFT);
-        if (cKey.vkCode == 68) on_key_released(Key::RIGHT);
-        return CallNextHookEx(hHook, nCode, wParam, lParam);
-    }
+        if (wParam == WM_KEYUP)
+        {
+            if (cKey.vkCode == left_click_key[0])  on_key_released(Key::LEFT);
+            if (cKey.vkCode == right_click_key[0]) on_key_released(Key::RIGHT);
+            return CallNextHookEx(hHook, nCode, wParam, lParam);
+        }
 
-    if (65 <= cKey.vkCode && cKey.vkCode <= 90)
-    {
-        if (cKey.vkCode == 83 && !left_down)  on_key_pressed(Key::LEFT);
-        if (cKey.vkCode == 68 && !right_down) on_key_pressed(Key::RIGHT);
+        if (cKey.vkCode == left_click_key[0]  && !left_down)  on_key_pressed(Key::LEFT);
+        if (cKey.vkCode == right_click_key[0] && !right_down) on_key_pressed(Key::RIGHT);
     }
 
     return CallNextHookEx(hHook, nCode, wParam, lParam);
@@ -215,13 +218,13 @@ static void set_keyboard_hook()
         } break;
         case KeyPress:
         {
-            if (event.xkey.keycode == 39 && !left_down)  on_key_pressed(Key::LEFT);
-            if (event.xkey.keycode == 40 && !right_down) on_key_pressed(Key::RIGHT);
+            if (!left_down  && event.xkey.keycode == XKeysymToKeycode(display, left_click_key[0]))  on_key_pressed(Key::LEFT);
+            if (!right_down && event.xkey.keycode == XKeysymToKeycode(display, right_click_key[0])) on_key_pressed(Key::RIGHT);
         } break;
         case KeyRelease:
         {
-            if (event.xkey.keycode == 39) on_key_released(Key::LEFT);
-            if (event.xkey.keycode == 40) on_key_released(Key::RIGHT);
+            if (event.xkey.keycode == XKeysymToKeycode(display, left_click_key[0]))  on_key_released(Key::LEFT);
+            if (event.xkey.keycode == XKeysymToKeycode(display, right_click_key[0])) on_key_released(Key::RIGHT);
         } break;
         }
     }
