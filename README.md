@@ -12,10 +12,10 @@
 
 ## Keys
 
-|  Keys   | Description    |
-|---------|----------------|
-| S       | Left Click     |
-| D       | Right Click    |
-| Alt + / | Reset (Hotkey) |
-| LMB     | Reset          |
-| RMB     | Settings       |
+|  Keys       | Description    |
+|-------------|----------------|
+| Z (Default) | Left Click     |
+| X (Default) | Right Click    |
+| Alt + /     | Reset (Hotkey) |
+| LMB         | Reset          |
+| RMB         | Settings       |
