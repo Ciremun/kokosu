@@ -147,7 +147,7 @@ int main(int, char**)
                 ImGui::PopItemWidth();
             }
 
-            ImGui::Dummy(ImVec2(0.0f, 2.0f));
+            ImGui::Dummy(ImVec2(0.0f, 1.0f));
 
             for (int i = 0; i < IM_ARRAYSIZE(settings); i++)
             {
@@ -160,7 +160,7 @@ int main(int, char**)
                 }
             }
 
-            ImGui::Dummy(ImVec2(0.0f, 2.0f));
+            ImGui::Dummy(ImVec2(0.0f, 1.0f));
 
             if (ImGui::MenuItem("Exit Kokosu"))
                 glfwSetWindowShouldClose(window, GL_TRUE);
