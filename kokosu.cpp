@@ -147,6 +147,8 @@ int main(int, char**)
                 ImGui::PopItemWidth();
             }
 
+            ImGui::Dummy(ImVec2(0.0f, 2.0f));
+
             for (int i = 0; i < IM_ARRAYSIZE(settings); i++)
             {
                 if (ImGui::MenuItem(settings[i], "", &toggles[i]))
@@ -157,6 +159,11 @@ int main(int, char**)
                         unset_always_on_top(window);
                 }
             }
+
+            ImGui::Dummy(ImVec2(0.0f, 2.0f));
+
+            if (ImGui::MenuItem("Exit Kokosu"))
+                glfwSetWindowShouldClose(window, GL_TRUE);
 
             ImGui::EndPopup();
         }
