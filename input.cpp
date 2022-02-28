@@ -14,6 +14,7 @@ unsigned int left_i = 0;
 unsigned int right_i = 0;
 bool left_down = false;
 bool right_down = false;
+bool drag = false;
 
 double begin = 0.0;
 int keypresses_count = 0;
@@ -42,7 +43,10 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
             lmb_down = true;
         }
         if(action == GLFW_RELEASE)
+        {
             lmb_down = false;
+            drag = false;
+        }
     }
 }
 

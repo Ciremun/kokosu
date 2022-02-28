@@ -25,7 +25,7 @@ extern unsigned int left_i;
 extern unsigned int right_i;
 extern bool left_down;
 extern bool right_down;
-
+extern bool drag;
 extern bool lmb_down;
 extern double last_mouse_clicked_x;
 extern double last_mouse_clicked_y;
@@ -116,15 +116,6 @@ int main(int, char**)
     {
         glfwPollEvents();
 
-        if (lmb_down)
-        {
-            int win_x, win_y;
-            double mouse_x, mouse_y;
-            glfwGetCursorPos(window, &mouse_x, &mouse_y);
-            glfwGetWindowPos(window, &win_x, &win_y);
-            glfwSetWindowPos(window, mouse_x + win_x - last_mouse_clicked_x, mouse_y + win_y - last_mouse_clicked_y);
-        }
-
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
@@ -133,6 +124,17 @@ int main(int, char**)
         ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f), ImGuiCond_Once);
 
         ImGui::Begin("kokosu", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+        if (lmb_down && !drag && ImGui::IsItemHovered())
+            drag = true;
+
+        if (drag)
+        {
+            int win_x, win_y;
+            double mouse_x, mouse_y;
+            glfwGetCursorPos(window, &mouse_x, &mouse_y);
+            glfwGetWindowPos(window, &win_x, &win_y);
+            glfwSetWindowPos(window, mouse_x + win_x - last_mouse_clicked_x, mouse_y + win_y - last_mouse_clicked_y);
+        }
 
         static const char* settings[] = { "Always On Top" };
         static bool toggles[] = { false };
