@@ -68,7 +68,7 @@ int main(int, char**)
     glfwWindowHint(GLFW_MOUSE_PASSTHROUGH, GLFW_TRUE);
 #endif // GLFW_MOUSE_PASSTHROUGH
 
-    GLFWwindow* window = glfwCreateWindow(130, 212, "kokosu", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(136, 211, "kokosu", NULL, NULL);
     if (window == NULL)
         return 1;
     glfwMakeContextCurrent(window);
@@ -127,7 +127,7 @@ int main(int, char**)
         ImGui::NewFrame();
 
         ImGui::SetNextWindowSize(ImVec2(88.0f, 211.0f), ImGuiCond_Once);
-        ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f), ImGuiCond_Once);
+        ImGui::SetNextWindowPos(ImVec2(24.0f, 0.0f), ImGuiCond_Once);
 
         ImGui::Begin("kokosu", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
         if (lmb_down && !drag && ImGui::IsItemHovered())
