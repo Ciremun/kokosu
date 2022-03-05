@@ -10,8 +10,8 @@ double last_mouse_clicked_y = 0.0f;
 
 char left_s[16] = {'0', '\0'};
 char right_s[16] = {'0', '\0'};
-unsigned int left_i = 9998;
-unsigned int right_i = 9998;
+unsigned int left_i = 0;
+unsigned int right_i = 0;
 bool left_down = false;
 bool right_down = false;
 bool drag = false;
