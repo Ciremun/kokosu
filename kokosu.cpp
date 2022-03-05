@@ -15,8 +15,8 @@
 #include "icon.hpp"
 #include "input.hpp"
 
-#define WINDOW_WIDTH 150
-#define WINDOW_HEIGHT 178
+#define WINDOW_WIDTH 88
+#define WINDOW_HEIGHT 211
 
 extern char left_s[16];
 extern char right_s[16];
@@ -62,7 +62,13 @@ int main(int, char**)
 #endif
 
     glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-    GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "kokosu", NULL, NULL);
+    glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
+
+#ifdef GLFW_MOUSE_PASSTHROUGH
+    glfwWindowHint(GLFW_MOUSE_PASSTHROUGH, GLFW_TRUE);
+#endif // GLFW_MOUSE_PASSTHROUGH
+
+    GLFWwindow* window = glfwCreateWindow(130, 212, "kokosu", NULL, NULL);
     if (window == NULL)
         return 1;
     glfwMakeContextCurrent(window);
@@ -120,7 +126,7 @@ int main(int, char**)
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        ImGui::SetNextWindowSize(ImVec2(WINDOW_WIDTH, WINDOW_HEIGHT), ImGuiCond_Once);
+        ImGui::SetNextWindowSize(ImVec2(88.0f, 211.0f), ImGuiCond_Once);
         ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f), ImGuiCond_Once);
 
         ImGui::Begin("kokosu", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
@@ -174,16 +180,14 @@ int main(int, char**)
 
         ImGui::PushID(0);
         if (left_down) ImGui::PushStyleColor(ImGuiCol_Button, MAGENTA);
-        if (ImGui::Button(left_s, ImVec2(63.0f, 115.0f)))
+        if (ImGui::Button(left_s, ImVec2(72.0f, 72.0f)))
             reset();
         if (left_down) ImGui::PopStyleColor();
         ImGui::PopID();
 
-        ImGui::SameLine();
-
         ImGui::PushID(1);
         if (right_down) ImGui::PushStyleColor(ImGuiCol_Button, MAGENTA);
-        if (ImGui::Button(right_s, ImVec2(63.0f, 115.0f))) reset();
+        if (ImGui::Button(right_s, ImVec2(72.0f, 72.0f))) reset();
         if (right_down) ImGui::PopStyleColor();
         ImGui::PopID();
 
