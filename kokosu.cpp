@@ -64,10 +64,6 @@ int main(int, char**)
     glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
     glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
 
-#ifdef GLFW_MOUSE_PASSTHROUGH
-    glfwWindowHint(GLFW_MOUSE_PASSTHROUGH, GLFW_TRUE);
-#endif // GLFW_MOUSE_PASSTHROUGH
-
     GLFWwindow* window = glfwCreateWindow(136, 211, "kokosu", NULL, NULL);
     if (window == NULL)
         return 1;
